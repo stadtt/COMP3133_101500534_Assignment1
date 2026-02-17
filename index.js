@@ -6,8 +6,8 @@ const { buildSchema } = require('graphql')
 
 
 
-const app = express();
-
+const app = express()
+const PORT = 4000
 
 const connectDB = async() => {
     try{
@@ -23,3 +23,9 @@ const connectDB = async() => {
         
     }
 }
+
+app.listen(PORT, () =>{
+    connectDB()
+    console.log("GraphQL Server started")
+    console.log("http://localhost:4000/graphql")
+})
