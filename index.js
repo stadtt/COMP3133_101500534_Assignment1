@@ -89,6 +89,33 @@ const schema = buildSchema(`
 
 
 const root = {
+        
+       loginUser : (username: String!, password: String!) => {
+
+       },
+        getAllEmployees: () => {
+
+        },
+        getEmployeeById: (_id: ID!)  =>{
+
+        },
+        searchEmployee : (designation: String, department: String) => {
+
+        },
+        signupUser : () => {
+
+        },
+        addEmployee : () => {
+
+        },
+        updateEmployee : () => {
+
+        },
+        deleteEmployee : () => {
+
+
+        }
+
 
 }
 
