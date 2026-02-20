@@ -30,52 +30,50 @@ const schema = buildSchema(`
         type Query {
             loginUser(username: String!, password: String!): User
             getAllEmployees: [Employee]
-            getEmployeeById(_id: ID!) : Employee
+            getEmployeeById(_id: ID!): Employee
             searchEmployee(
-            designation: String
-            department: String
-            ) : [Employee]
-        
-        
+                designation: String
+                department: String
+            ): [Employee]
         }
 
         type Mutation {
-                signupUser(username: String!, password: String!, email: String!):User
-                addEmployee(
-                    first_name: String,
-                    last_name: String,
-                    email: String,
-                    gender: String,
-                    designation: String,
-                    salary: Float,
-                    date_of_joining: String,
-                    department: String,
-                ): User
-                updateEmployee(
-                    _id: ID!,
-                    first_name: String,
-                    last_name: String,
-                    email: String,
-                    gender: String,
-                    designation: String,
-                    salary: Float,
-                    date_of_joining: String,
-                    department: String
-                    ) : User
-                deleteEmployee(_id: ID!) : User
-        
-        
-        
+            signupUser(username: String!, password: String!, email: String!): User
+            addEmployee(
+                first_name: String
+                last_name: String
+                email: String
+                gender: String
+                designation: String
+                salary: Float
+                date_of_joining: String
+                department: String
+            ): Employee
+
+            updateEmployee(
+                _id: ID!
+                first_name: String
+                last_name: String
+                email: String
+                gender: String
+                designation: String
+                salary: Float
+                date_of_joining: String
+                department: String
+            ): Employee
+
+            deleteEmployee(_id: ID!): Employee
         }
-        type User{
+
+        type User {
             id: ID
             username: String
             password: String
             email: String
-
-    
         }
+
         type Employee {
+            _id: ID
             first_name: String
             last_name: String
             email: String
@@ -85,8 +83,7 @@ const schema = buildSchema(`
             date_of_joining: String
             department: String
         }
-
-    `)
+`)
 
 
 
@@ -94,12 +91,11 @@ const root = {
         
        loginUser : async (args) => {
 
-         const username = args.username
-         const password = args.password
-
         try {
-             const user =  await UserModel.findOne({ username: username })
-             if(user.password == password){
+            const user = await UserModel.findOne({ username: args.username });
+            if (!user) return null;
+
+             if(user.password == args.password){
                 return user
              }
 
@@ -111,11 +107,11 @@ const root = {
        },
         getAllEmployees: async () => {
 
-             try{
+        try{
             const Employees = await EmployeeModel.find()
             return Employees
         }catch(error){
-            console.log(`Error while fetching users : ${error.message}`)
+            console.log(`Error while fetching Employees : ${error.message}`)
             return []
         }
 
@@ -123,10 +119,10 @@ const root = {
         },
         getEmployeeById: async (args)  => {
              try{
-                const user = await UserModel.findOne({uid: args.uid})
-                return user
+                const Employee = await EmployeeModel.findOne({_id: args._id})
+                return Employee
             }  catch(error){
-                console.log(`Error while fetching user : ${error.message}`)
+                console.log(`Error while fetching Employee : ${error.message}`)
             return null
         }
 
@@ -135,16 +131,16 @@ const root = {
         try {
             const { designation, department } = args;
 
-            const user = await UserModel.findOne({
+            const Employee = await EmployeeModel.findOne({
             $or: [
                 ...(designation ? [{ designation }] : []),
                 ...(department ? [{ department }] : [])
             ]
             });
 
-            return user;
+            return Employee;
         } catch (error) {
-            console.log(`Error while fetching user: ${error.message}`);
+            console.log(`Error while fetching Employee: ${error.message}`);
             return null;
             }
         }
@@ -223,6 +219,7 @@ const root = {
 
 
         }
+
 }
 
 
