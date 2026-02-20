@@ -5,6 +5,8 @@ require("dotenv").config()
 const { buildSchema } = require('graphql')
 const { createHandler } = require('graphql-http/lib/use/express')
 
+const UserModel = require("./model/Users")
+const EmployeeModel = require("./model/Employee")
 
 const app = express()
 const PORT = 4000
@@ -90,33 +92,137 @@ const schema = buildSchema(`
 
 const root = {
         
-       loginUser : (username: String!, password: String!) => {
+       loginUser : async (args) => {
 
+         const username = args.username
+         const password = args.password
+
+        try {
+             const user =  await UserModel.findOne({ username: username })
+             if(user.password == password){
+                return user
+             }
+
+        }catch(error){
+                console.log(`Error logging in : ${error.message}`)
+            return null
+
+        }
        },
-        getAllEmployees: () => {
+        getAllEmployees: async () => {
 
-        },
-        getEmployeeById: (_id: ID!)  =>{
-
-        },
-        searchEmployee : (designation: String, department: String) => {
-
-        },
-        signupUser : () => {
-
-        },
-        addEmployee : () => {
-
-        },
-        updateEmployee : () => {
-
-        },
-        deleteEmployee : () => {
-
-
+             try{
+            const Employees = await EmployeeModel.find()
+            return Employees
+        }catch(error){
+            console.log(`Error while fetching users : ${error.message}`)
+            return []
         }
 
 
+        },
+        getEmployeeById: async (args)  => {
+             try{
+                const user = await UserModel.findOne({uid: args.uid})
+                return user
+            }  catch(error){
+                console.log(`Error while fetching user : ${error.message}`)
+            return null
+        }
+
+        },
+        searchEmployee: async (_, args) => {
+        try {
+            const { designation, department } = args;
+
+            const user = await UserModel.findOne({
+            $or: [
+                ...(designation ? [{ designation }] : []),
+                ...(department ? [{ department }] : [])
+            ]
+            });
+
+            return user;
+        } catch (error) {
+            console.log(`Error while fetching user: ${error.message}`);
+            return null;
+            }
+        }
+
+
+        ,
+        signupUser : async () => {
+            try{
+            const newUser = await new UserModel({
+                
+                username: args.username,
+                password: args.password,
+                email: args.email
+            })
+            const savedUser = await newUser.save()
+            return savedUser
+        }catch(error){
+            console.log(`Error while creating user : ${error.message}`)
+            return null
+        }
+
+        },
+        addEmployee : async (args) => {
+            try{
+                const newEmployee = await new EmployeeModel({
+                    first_name: args.first_name,
+                    last_name: args.last_name,
+                    email: args.email,
+                    gender: args.gender,
+                    designation: args.designation,
+                    salary: args.salary,
+                    department: args.department
+
+                })
+
+            }catch(error){
+                     console.log(`Error while creating employee : ${error.message}`)
+            return null
+            }
+
+        },
+        updateEmployee : async(args) => {
+
+              try{
+                const UpdateEmployee = await EmployeeModel.findOneAndUpdate(
+                {_id: args._id},
+                {
+                    $set: {
+                    first_name: args.first_name,
+                    last_name: args.last_name,
+                    email: args.email,
+                    gender: args.gender,
+                    designation: args.designation,
+                    salary: args.salary,
+                    department: args.department
+                    }
+
+                },
+                {new: true}
+            )
+            return UpdateEmployee
+            }catch(error){
+                     console.log(`Error while Updating Employee : ${error.message}`)
+            return null
+            }
+
+        },
+        deleteEmployee : async (args) => {
+        try{
+            const deletedEmployee = await EmployeeModel.findByIdAndDelete(args._id)
+            return deletedEmployee
+        }catch(error){
+            console.log(`Error while deleting Employee : ${error.message}`)
+            return null
+        }
+
+
+        }
 }
 
 
