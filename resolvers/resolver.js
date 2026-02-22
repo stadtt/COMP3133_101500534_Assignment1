@@ -43,21 +43,21 @@ const rootResolver = {
         }
 
         },
-        searchEmployee: async (_, args) => {
+        searchEmployee: async (args) => {
         try {
             const { designation, department } = args;
 
-            const Employee = await EmployeeModel.findOne({
+            const Employees = await EmployeeModel.find({
             $or: [
                 ...(designation ? [{ designation }] : []),
                 ...(department ? [{ department }] : [])
             ]
             });
 
-            return Employee;
+            return Employees;
         } catch (error) {
             console.log(`Error while fetching Employee: ${error.message}`);
-            return null;
+            return [];
             }
         }
 
@@ -75,7 +75,7 @@ const rootResolver = {
             return savedUser
         }catch(error){
             console.log(`Error while creating user : ${error.message}`)
-            return null
+            throw new Error(error.message)
         }
 
         },
