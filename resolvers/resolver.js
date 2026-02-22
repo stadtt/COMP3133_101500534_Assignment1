@@ -139,7 +139,6 @@ const rootResolver = {
             return null
         }
 
-
         }
 
 }
