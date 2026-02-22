@@ -48,6 +48,7 @@ const schema = buildSchema(`
                 salary: Float
                 date_of_joining: String
                 department: String
+                employee_photo: String
             ): Employee
 
             updateEmployee(
@@ -60,6 +61,7 @@ const schema = buildSchema(`
                 salary: Float
                 date_of_joining: String
                 department: String
+                employee_photo: String
             ): Employee
 
             deleteEmployee(_id: ID!): Employee
@@ -82,6 +84,7 @@ const schema = buildSchema(`
             salary: Float
             date_of_joining: String
             department: String
+            employee_photo: String
         }
 `)
 
@@ -147,7 +150,7 @@ const root = {
 
 
         ,
-        signupUser : async () => {
+        signupUser : async (args) => {
             try{
             const newUser = await new UserModel({
                 
@@ -172,9 +175,13 @@ const root = {
                     gender: args.gender,
                     designation: args.designation,
                     salary: args.salary,
-                    department: args.department
+                    date_of_joining: args.date_of_joining,
+                    department: args.department,
+                    employee_photo: args.employee_photo
 
                 })
+                const savedEmployee = await newEmployee.save()
+                return savedEmployee
 
             }catch(error){
                      console.log(`Error while creating employee : ${error.message}`)
@@ -195,7 +202,9 @@ const root = {
                     gender: args.gender,
                     designation: args.designation,
                     salary: args.salary,
-                    department: args.department
+                    date_of_joining: args.date_of_joining,
+                    department: args.department,
+                    employee_photo: args.employee_photo
                     }
 
                 },

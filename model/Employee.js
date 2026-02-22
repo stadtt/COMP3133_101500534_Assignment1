@@ -63,6 +63,11 @@ const empSchema = new mongoose.Schema({
         minlength: 2,
         maxlength: 50,
     },
+    employee_photo: {
+        type: String,
+        default: null,
+        trim: true,
+    },
      created_at: {
         type: Date,
         default: Date.now
@@ -71,10 +76,7 @@ const empSchema = new mongoose.Schema({
         type: Date,
         default: Date.now
   },
-//   image: {
-//         type: String,  
-//         default: null,
-//     },
+
 
 })
 
