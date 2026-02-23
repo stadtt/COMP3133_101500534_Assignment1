@@ -98,7 +98,7 @@ const rootResolver = {
 
             }catch(error){
                      console.log(`Error while creating employee : ${error.message}`)
-            return null
+            throw new Error(error.message)
             }
 
         },
@@ -126,7 +126,7 @@ const rootResolver = {
             return UpdateEmployee
             }catch(error){
                      console.log(`Error while Updating Employee : ${error.message}`)
-            return null
+            throw new Error(error.message)
             }
 
         },
@@ -136,7 +136,7 @@ const rootResolver = {
             return deletedEmployee
         }catch(error){
             console.log(`Error while deleting Employee : ${error.message}`)
-            return null
+            throw new Error(error.message)
         }
 
         }
